@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        #weather-container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #1f1f1f;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #2ecc71;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+
+    <div id="weather-container">
+        <h2>Current Weather</h2>
+        <p id="weather-description"></p>
+        <p id="temperature"></p>
+        <p id="location"></p>
+        <button onclick="getWeather()">Get Weather</button>
+    </div>
+
+    <script>
+        function getWeather() {
+            const apiKey = 'YOUR_API_KEY';
+            const city = 'YOUR_CITY';
+
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const weatherDescription = data.weather[0].description;
+                    const temperature = data.main.temp;
+                    const location = data.name;
+
+                    document.getElementById('weather-description').textContent = `Weather: ${weatherDescription}`;
+                    document.getElementById('temperature').textContent = `Temperature: ${temperature} °C`;
+                    document.getElementById('location').textContent = `Location: ${location}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error.message);
+                    document.getElementById('weather-description').textContent = 'Error fetching weather data. Please check your API key and city.';
+                    document.getElementById('temperature').textContent = '';
+                    document.getElementById('location').textContent = '';
+                });
+        }
+    </script>
+</body>
+</html>
